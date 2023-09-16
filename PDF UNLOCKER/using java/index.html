@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PDF Unlocker</title>
+    <style>
+        /* Add your CSS styling here if needed */
+    </style>
+</head>
+<body>
+    <h2>PDF Unlocker</h2>
+    <form enctype="multipart/form-data">
+        <input type="file" id="pdfFile" accept=".pdf" required>
+        <input type="password" id="password" placeholder="Enter PDF Password" required>
+        <button type="button" onclick="unlockPDF()">Unlock PDF</button>
+    </form>
+
+    <!-- Add a hidden iframe to download the unlocked PDF -->
+    <iframe id="downloadFrame" style="display:none;"></iframe>
+
+    <script>
+        function unlockPDF() {
+            const pdfFile = document.getElementById('pdfFile').files[0];
+            const password = document.getElementById('password').value;
+
+            if (!pdfFile || !password) {
+                alert('Please select a PDF file and enter the password.');
+                return;
+            }
+
+            // Create a FormData object to send the PDF and password to the server
+            const formData = new FormData();
+            formData.append('pdfFile', pdfFile);
+            formData.append('password', password);
+
+            // Send a POST request to the Java server
+            fetch('unlockpdf', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.blob())
+            .then(blob => {
+                // Create a URL for the unlocked PDF
+                const url = URL.createObjectURL(blob);
+
+                // Trigger a download of the unlocked PDF using a hidden iframe
+                const downloadFrame = document.getElementById('downloadFrame');
+                downloadFrame.src = url;
+            })
+            .catch(error => {
+                alert('Error: ' + error);
+            });
+        }
+    </script>
+</body>
+</html>

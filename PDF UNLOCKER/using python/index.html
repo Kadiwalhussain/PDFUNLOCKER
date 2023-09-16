@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PDF Unlocker</title>
+</head>
+<body>
+    <h2>PDF Unlocker</h2>
+    <form method="POST" enctype="multipart/form-data" action="/unlock">
+        <input type="file" name="pdfFile" accept=".pdf" required><br><br>
+        <input type="password" name="password" placeholder="Enter PDF Password" required><br><br>
+        <input type="submit" value="Unlock PDF">
+    </form>
+</body>
+</html>

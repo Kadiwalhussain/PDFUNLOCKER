@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PDF Unlocker</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+    <h2>PDF Unlocker</h2>
+    <form action="unlock.php" method="post" enctype="multipart/form-data">
+        <input type="file" name="pdfFile" accept=".pdf" required><br><br>
+        <input type="password" name="password" placeholder="Enter PDF Password" required><br><br>
+        <input type="submit" value="Unlock PDF">
+    </form>
+    <div id="pdfContainer"></div>
+    <script src="script.js"></script>
+</body>
+</html>

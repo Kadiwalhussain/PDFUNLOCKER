@@ -1,0 +1,161 @@
+<html>
+<head>
+<style>
+/* Style the form */
+form {
+  border: 1px solid #ccc;
+  padding: 20px;
+  width: 600px;
+}
+
+/* Style the input fields */
+input {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0;
+}
+
+/* Style the submit button */
+input[type=submit] {
+  background-color: #04AA6D;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+/* Style the message box */
+#message {
+  color: red;
+  font-weight: bold;
+}
+</style>
+<script>
+// Function to upload and unlock the PDF file using AJAX
+function uploadAndUnlock() {
+  
+  // Get the file input element
+  var fileInput = document.getElementById("file");
+  
+  // Get the password input element
+  var passwordInput = document.getElementById("password");
+  
+  // Get the message element
+  var message = document.getElementById("message");
+  
+  // Clear the message text
+  message.innerHTML = "";
+  
+  // Check if the file input has a file
+  if (fileInput.files.length > 0) {
+    
+    // Get the first file from the file input
+    var file = fileInput.files[0];
+    
+    // Check if the file is a PDF
+    if (file.type == "application/pdf") {
+      
+      // Check if the password input is not empty
+      if (passwordInput.value != "") {
+        
+        // Create a new FormData object to send the file and password data
+        var formData = new FormData();
+        
+        // Append the file and password to the form data
+        formData.append("file", file);
+        formData.append("password", passwordInput.value);
+        
+        // Create a new XMLHttpRequest object to send the AJAX request
+        var xhr = new XMLHttpRequest();
+        
+        // Set the callback function for when the request is completed
+        xhr.onload = function() {
+          
+          // Check if the response status is OK
+          if (xhr.status == 200) {
+            
+            // Parse the response as JSON
+            var response = JSON.parse(xhr.responseText);
+            
+            // Check if the response has an error property
+            if (response.error) {
+              
+              // Display the error message
+              message.innerHTML = response.error;
+              
+            } else {
+              
+              // Display the success message and a link to download the unlocked PDF file
+              message.innerHTML = "PDF unlocked successfully. Click <a href='" + response.url + "'>here</a> to download it.";
+              
+            }
+            
+          } else {
+            
+            // Display a generic error message
+            message.innerHTML = "Something went wrong. Please try again later.";
+            
+          }
+          
+        };
+        
+        // Set the callback function for when the request progress changes
+        xhr.onprogress = function(event) {
+          
+          // Check if the event has a lengthComputable property
+          if (event.lengthComputable) {
+            
+            // Calculate the percentage of the upload progress
+            var percent = Math.round((event.loaded / event.total) * 100);
+            
+            // Display the upload progress message
+            message.innerHTML = "Uploading and unlocking PDF... " + percent + "%";
+            
+          }
+          
+        };
+        
+        // Open the request with POST method and PHP script URL
+        xhr.open("POST", "unlock.php");
+        
+        // Send the request with form data
+        xhr.send(formData);
+        
+      } else {
+        
+        // Display an error message for empty password
+        message.innerHTML = "Please enter a password.";
+        
+      }
+      
+    } else {
+      
+      // Display an error message for invalid file type
+      message.innerHTML = "File type must be PDF.";
+      
+    }
+    
+  } else {
+    
+    // Display an error message for no file selected
+    message.innerHTML = "Please select a file.";
+    
+  }
+  
+}
+</script>
+</head>
+<body>
+<h1>Upload and Unlock PDF File</h1>
+<form action="unlock.php" method="post" enctype="multipart/form-data">
+<p>Please select a PDF file and enter its password to unlock it.</p>
+<label for="file">Select PDF File</label>
+<input type="file" id="file" name="file" accept="application/pdf">
+
+<label for="password">Enter Password</label>
+<input type="password" id="password" name="password">
+
+<input type="button" value="Upload and Unlock" onclick="uploadAndUnlock()">
+<p id="message"></p>
+</form>
+</body>
+</html>
