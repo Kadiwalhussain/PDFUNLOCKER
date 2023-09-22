@@ -43,6 +43,7 @@ public class UnlockPdfServlet extends HttpServlet {
             while ((bytesRead = unlockedPdfInputStream.read(buffer)) != -1) {
                 responseOutputStream.write(buffer, 0, bytesRead);
             }
+//updating...
 
             unlockedPdfInputStream.close();
             responseOutputStream.flush();
